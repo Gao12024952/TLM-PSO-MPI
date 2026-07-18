@@ -114,3 +114,18 @@ The following figures illustrate the construction of the program under test, the
 <p align="center">
   <em>Figure 3. Two-Level Multi-Population PSO (TLM-PSO) for Co-Evolution.</em>
 </p>
+
+## 4. Core Modules
+
+
+- **Path-pair determination:** Target paths are paired according to path similarity, forming aggregated path pairs with high similarity and divergent path pairs with low similarity.
+
+- **Process-relevant variable decomposition:** The complete input vector is decomposed into variable subsets according to the variables affecting each process subpath.
+
+- **Inner-level cooperative optimization:** Subprocess swarms search the process-relevant variable subsets, while the cooperative swarm combines and evaluates the partial solutions in the complete input space.
+
+- **Outer-level co-evolution:**
+  - **Aggregated path pairs:** High-fitness particles are exchanged to reuse useful search information and accelerate convergence.
+  - **Divergent path pairs:** Low-fitness particles are migrated to introduce heterogeneous information and improve population diversity.
+
+- **Multi-path test data generation:** The inner- and outer-level strategies are coordinated to generate test data covering multiple target mutation-based paths.
