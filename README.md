@@ -112,5 +112,5 @@ The following figures illustrate the construction of the program under test, the
 </p>
 
 <p align="center">
-  <em>Figure 3. Inner-level cooperative evolution within a mutation-based path and outer-level co-evolution among aggregated and divergent path pairs.</em>
+  <em>Figure 3. Two-Level Multi-Population PSO (TLM-PSO) for Co-Evolution.</em>
 </p>
