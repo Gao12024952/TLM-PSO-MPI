@@ -59,7 +59,7 @@ The process-relevant variable subsets are:
 - **Inertia weight:** `w = 0.729`
 - **Acceleration coefficients:** `c1 = 2.0`, `c2 = 2.0`
 - **Velocity range:** `[-100, 100]`
-- **Local evolution interval:** `GENL = 4`
+- **Local evolution interval:** `GENL = 3`
 - **Information-exchange frequency:** every 3 updates
 - **Particle-migration ratio:** 30%
 
