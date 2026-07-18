@@ -80,3 +80,37 @@ The process-relevant variable subsets are:
 - **Aggregated path pairs:** exchange high-fitness particles.
 - **Divergent path pairs:** migrate low-fitness particles.
 - **Received particles:** re-evaluated using the receiving target path.
+
+## 3. Framework Overview
+
+The following figures illustrate the construction of the program under test, the overall workflow of the proposed method, and the two-layer co-evolutionary mechanism.
+
+### 3.1 Construction of the Program Under Test
+
+<p align="center">
+  <img src="Picture/figure1.jpg" width="95%">
+</p>
+
+<p align="center">
+  <em>Figure 1. Original MPI program and the corresponding program under test after inserting mutant branches.</em>
+</p>
+
+### 3.2 Overall Framework of TLM_PSO
+
+<p align="center">
+  <img src="Picture/figure2.jpg" width="95%">
+</p>
+
+<p align="center">
+  <em>Figure 2. Overall framework of the proposed Two-Layer Co-Evolutionary Multi-Population Particle Swarm Optimization algorithm (TLM_PSO).</em>
+</p>
+
+### 3.3 Two-Layer Co-Evolutionary Mechanism
+
+<p align="center">
+  <img src="Picture/figure3.jpg" width="95%">
+</p>
+
+<p align="center">
+  <em>Figure 3. Inner-level cooperative evolution within a mutation-based path and outer-level co-evolution among aggregated and divergent path pairs.</em>
+</p>
