@@ -13,16 +13,12 @@ The experiments reported in the paper were conducted using the following hardwar
 - **CPU:** Intel Core i7 processor
 - **Memory:** 16 GB RAM
 
-> The exact processor model should be added here if available.
-
 ### 1.2 Software
 
-The implementation is written in Python and uses MPI for parallel execution.
-
-- **Python:** [fill in the actual Python version]
-- **MPI implementation:** [fill in the actual MPI implementation and version]
-- **mpi4py:** [fill in the actual version]
-- **openpyxl:** [fill in the actual version]
+- **Python:** 3.12.4
+- **Python environment:** Anaconda base environment
+- **mpi4py:** 4.0.3
+- **openpyxl:** 3.1.2
 
 Install the required Python packages using:
 
