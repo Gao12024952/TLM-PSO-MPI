@@ -15,10 +15,10 @@ The experiments reported in the paper were conducted using the following hardwar
 
 ### 1.2 Software
 
-- **Python:** 3.12.4
+- **Python:** 3.12.4 or later
 - **Python environment:** Anaconda base environment
-- **mpi4py:** 4.0.3
-- **openpyxl:** 3.1.2
+- **mpi4py:** 4.0.3 or later
+- **openpyxl:** 3.1.2 or later
 
 Install the required Python packages using:
 
