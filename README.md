@@ -135,134 +135,166 @@ The following figures illustrate the construction of the program under test, the
 ### Algorithm 1: Two-Level Co-Evolutionary Multi-Population PSO for Test Data Generation
 
 ```text
-Require:
-    Full target-path set P = {p_1, p_2, ..., p_L}
-    PSO parameters and termination conditions
+Input:
+    Full paths set P = {p_1, p_2, ..., p_n} for a parallel
+    program P; Parameters
 
-Ensure:
-    Test data set covering all target mutation-based paths
+Output:
+    Test data set for each full path p_k, covering all its
+    subpaths p_k^0 to p_k^(m-1)
 
-1:  Initialize the particle swarm O_k for each target path p_k
-2:  Initialize the subprocess swarms O_k^i using the
-    process-relevant variable subsets
-
-3:  while the termination condition is not met do
-4:      for each target-path task T_k do
-5:          for each subprocess swarm O_k^i do
-6:              Evaluate each particle on process subpath p_k^i
-7:              Update particle velocity, position, pbest, and gbest
-8:          end for
-
-9:          if the inner-level evolution condition is met then
-10:             Call Algorithm 2 to perform inner-level
-                cooperative optimization
-11:         end if
-
-12:         Evaluate candidate inputs on the complete path p_k
-13:         Update the global best solution for T_k
-14:     end for
-
-15:     if the outer-level evolution condition is met then
-16:         Call Algorithm 3 to exchange information among
-            aggregated and divergent path pairs
-17:     end if
-18: end while
-
-19: return the test data set covering all target paths
+1:  Initialize particle swarms O_k and O_k^i ∈ O_k with
+    the input variables of process G^i
+2:  while the termination condition for test data generation
+    is not met do
+3:      for iter = 1 to maximum iterations do
+4:          for each particle x_(k,j)^i in O_k^i do
+5:              Evaluate the fitness of x_(k,j)^i on
+                subpath p_k^i
+6:              PSO performs evolutionary operations
+7:          end for
+8:          for each full-path task T_k do
+9:              if the inner-level evolution condition is met then
+10:                 Call Algorithm 2 to exchange information
+                    among the inner-level swarms O_k^0 to
+                    O_k^(m-1)
+11:             end if
+12:             Evaluate the fitness of the full path for T_k
+13:             Update gbest_k if the current global fitness
+                is better
+14:         end for
+15:         if the outer-level evolution condition is met then
+16:             Call Algorithm 3 to perform information transfer
+                between aggregated/divergent path pairs and
+                update the elite sets
+17:         end if
+18:     end for
+19: end while
+20: return the test data set for all full paths
 ```
 
 ### Algorithm 2: Inner-Level Cooperative PSO for a Single Multi-Process Path
 
 ```text
-Require:
-    A complete target path
-    p_k = p_k^0 || p_k^1 || ... || p_k^(m-1)
-    PSO parameters
+Input:
+    A full path
+    p_k = p_k^0 || p_k^1 || ... || p_k^(m-1);
+    Parameters
 
-Ensure:
-    Test data covering the complete path p_k
+Output:
+    Test data covering p_k
 
-1:  Initialize the cooperative swarm O_k^0
-2:  Initialize subprocess swarms O_k^1, ..., O_k^(m-1)
-
-3:  while p_k is not covered and the maximum iteration
-    budget is not reached do
-
-4:      Evolve each subprocess swarm within its
-        process-relevant variable subset
-
-5:      if subprocess evolution reaches the local
-        evolution interval then
-6:          Select high-fitness particles from each subprocess swarm
-7:          Transfer the selected particles to O_k^0
-8:          Combine the partial particles to construct complete inputs
-9:      end if
-
-10:     Evolve the cooperative swarm O_k^0 in the complete
-        input space
-
-11:     if a candidate input covers p_k then
-12:         Terminate the cooperative swarm and all subprocess swarms
-13:     end if
-
-14:     if cooperative-swarm evolution reaches the global
-        evolution interval then
-15:         Select high-fitness particles from O_k^0
-16:         Decompose them according to the process-relevant variables
-17:         Transfer the partial particles to the corresponding
-            subprocess swarms
-18:         Replace selected particles in each subprocess swarm
-19:     end if
-20: end while
-
-21: return the test data covering p_k
-```
-
-### Algorithm 3: Outer-Level Co-Evolutionary PSO for Aggregated and Divergent Path Pairs
-
-```text
-Require:
-    Full target-path set P = {p_1, p_2, ..., p_L}
-    Aggregated path pairs
-    Divergent path pairs
-    PSO parameters
-
-Ensure:
-    Updated particle swarms and test data covering all target paths
-
-1:  Establish cooperative relationships for all aggregated
-    and divergent path pairs
-
-2:  while not all target paths are covered and the maximum
-    iteration budget is not reached do
-
-3:      for each aggregated path pair <p_a, p_b> do
-4:          if the information-exchange interval is reached then
-5:              Select high-fitness particles from the swarm of p_b
-6:              Transfer them to the corresponding swarm of p_a
-7:              Re-evaluate the received particles using p_a
-8:              Update the elite-particle set
+1:  Evolve each O_k^i in parallel within its respective process
+2:  Pause evolution if a message-passing statement waits for
+    information from other processes
+3:  while the termination condition is not met do
+4:      for each sub-swarm O_k^i
+        (i = 1, 2, ..., m - 1) do
+5:          if evolution reaches λ generations then
+6:              Select α high-fitness particles
+                x_(k,h)^i, h = 1, 2, ..., α
+7:              Transmit these particles to the cooperative
+                swarm O_k^0
+8:              Pause the evolution of O_k^i and wait for
+                messages from O_k^0
 9:          end if
-
-10:         Calculate the information-transfer decision parameter
-11:         if cooperative information is selected then
-12:             Update particle velocities using the elite particles
-13:         else
-14:             Update particle velocities using standard PSO
-15:         end if
-16:         Update particle positions
-17:     end for
-
-18:     for each divergent path pair <p_a, p_c> do
-19:         if the particle-migration interval is reached then
-20:             Select low-fitness particles from the swarm of p_a
-21:             Transfer them to the swarm of p_c
-22:             Re-evaluate the transferred particles using p_c
-23:             Replace low-fitness local particles when the
-                transferred particles obtain better fitness
-24:         end if
+10:     end for
+11:     Evolve O_k^0 with the combined particles
+12:     if the test data cover p_k or the maximum number of
+        iterations is reached then
+13:         Terminate all swarms
+            O_k^0, O_k^1, ..., O_k^(m-1)
+14:         Go to Line 27
+15:     end if
+16:     if the evolution of O_k^0 reaches φ iterations then
+17:         Select β high-fitness particles
+            x_(k,h)^0, h = 1, 2, ..., β
+18:         Transmit these particles to the respective
+            sub-swarms O_k^i according to their variable
+            requirements
+19:         Pause the evolution of O_k^0 and wait for messages
+            from the sub-swarms
+20:     end if
+21:     for each sub-swarm O_k^i
+        (i = 1, 2, ..., m - 1) do
+22:         Receive new particles from O_k^0
+23:         Randomly replace particles in swarm O_k^i with
+            the received particles
+24:         Resume the evolution of O_k^i
 25:     end for
 26: end while
+27: return the test data covering the full path p_k
+```
 
-27: return the test data set covering all target paths
+### Algorithm 3: Outer-Level Co-Evolutionary PSO Strategy for Aggregated and Divergent Path Pairs
+
+```text
+Input:
+    Set of full paths p = {p_1, p_2, ..., p_L},
+    where p_k = p_k^0 || p_k^1 || ... || p_k^(m-1);
+    Parameters
+
+Output:
+    Test data set covering all full paths
+
+1:  For each aggregated pair <p_a, p_b> or divergent pair
+    <p_a, p_c>, establish cooperative relationships
+2:  Initialize the elite particle sets H_a^i = ∅ for all O_a^i
+3:  while the termination condition is not met do
+4:      for each aggregated path pair do
+5:          for each path p_b in the aggregated pair
+            <p_a, p_b> and each sub-swarm O_b^i do
+6:              if evolution reaches λ iterations then
+7:                  Select τ high-fitness particles from O_b^i
+                    and transmit them to the corresponding O_a^i
+8:                  Update H_a^i with the received particles,
+                    retaining the top τ fitness values
+9:              end if
+10:         end for
+11:         for each particle in O_a^i at generation g do
+12:             Current position: X^i(g);
+                velocity: V^i(g)
+13:             Personal best: Pb_a(g);
+                global best: Gb_a(g)
+14:         end for
+15:         Obtain the decision parameter k_tp using Eq. (12)
+16:         Generate a random value rand ∈ [0, 1]
+17:         if rand > k_tp then
+18:             Update velocity using traditional PSO according
+                to Eq. (6)
+19:         else
+20:             Select a cooperative particle C_b^b(g*) from H_a^i
+21:             Update velocity with cooperative information
+                according to Eq. (13)
+22:         end if
+23:         Update the particle position according to Eq. (7)
+24:     end for
+25:     for each divergent path pair do
+26:         for the cooperative swarm O_a^0 of path p_a in the
+            divergent pair <p_a, p_c> do
+27:             if evolution reaches φ generations then
+28:                 Sort all particles in O_a^0 in ascending order
+                    according to their fitness values
+29:                 Select θ% × Size^i particles with low
+                    fitness values
+30:                 Transmit these low-fitness particles
+                    Low_(a,j)^0 to the cooperative swarm O_c^0
+                    of path p_c
+31:             end if
+32:             Calculate the new fitness values of particles
+                Low_(a,j)^0
+                (j = 1, 2, ..., θ% × Size^i)
+                using the objective function of p_c
+33:             if the new fitness of Low_(a,j)^0 is better than
+                that of some particle x_(c,j)^0 in O_c^0 then
+34:                 Replace the original particle x_(c,j)^0
+                    with Low_(a,j)^0
+35:             end if
+36:         end for
+37:     end for
+38:     Check the termination condition:
+        all paths are covered or the maximum number of
+        iterations is reached
+39: end while
+40: return the test data set for all target paths
 ```
