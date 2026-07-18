@@ -24,8 +24,9 @@ Install the required Python packages using:
 
 ```bash
 pip install -r requirements.txt
+```
 
-### 2. Core Experimental Settings
+## 2. Core Experimental Settings
 
 The following settings are used in the implemented experiments.
 
