@@ -329,9 +329,6 @@ For example, run TLM_PSO on Program P1 using:
 
 ```bash
 mpiexec -n 4 python "Core Algorithm Implementations/P1_Intelligent_Learning_Platform/TLM_PSO.py"
-```
-
-Here, `-n 4` specifies four MPI processes. The number of processes should be adjusted according to the process configuration of the selected benchmark program.
 
 ### 6.4 Run the Other Benchmark Programs
 
