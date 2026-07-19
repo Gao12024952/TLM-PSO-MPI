@@ -328,7 +328,7 @@ mpiexec --version
 For example, run TLM_PSO on Program P1 using:
 
 ```bash
-mpiexec -n 4 python "Core Algorithm Implementations/P1_Intelligent_Learning_Platform/TLM_PSO.py"
+mpiexec -n 4 python "experiments/P1_tests/test_unit_1/TLM_PSO.py"
 ```
 
 The number of MPI processes is determined by:
@@ -343,7 +343,6 @@ The experimental results are automatically saved in the `experimental_results/` 
 
 - `success.xlsx`: path-coverage success results
 - `time.xlsx`: total execution time
-- `fitness.xlsx`: fitness values
 - `iterations.xlsx`: number of iterations
 - `evaluations.xlsx`: number of fitness evaluations
 
