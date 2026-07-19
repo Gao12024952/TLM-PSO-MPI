@@ -298,3 +298,83 @@ Output:
 39: end while
 40: return the test data set for all target paths
 ```
+## 6. Quick Start
+
+The repository contains the TLM_PSO implementations for six MPI benchmark programs. Each experimental script performs 25 executions, including 5 warm-up executions and 20 formal independent runs, and automatically exports the statistical results.
+
+### 6.1 Clone the Repository
+
+```bash
+git clone https://github.com/Gao12024952/TLM-PSO-MPI.git
+cd TLM-PSO-MPI
+```
+
+### 6.2 Install Dependencies
+
+Install the required Python packages using:
+
+```bash
+pip install -r requirements.txt
+```
+
+An MPI runtime must also be installed before executing the programs. The MPI environment can be checked using:
+
+```bash
+mpiexec --version
+```
+
+### 6.3 Run an Experiment
+
+For example, run TLM_PSO on Program P1 using:
+
+```bash
+mpiexec -n 4 python "Core Algorithm Implementations/P1_Intelligent_Learning_Platform/TLM_PSO.py"
+```
+
+Here, `-n 4` specifies four MPI processes. The number of processes should be adjusted according to the process configuration of the selected benchmark program.
+
+### 6.4 Run the Other Benchmark Programs
+
+Program P2:
+
+```bash
+mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P2_Industrial_Production_Line_Analysis/TLM_PSO.py"
+```
+
+Program P3:
+
+```bash
+mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P3_Business_Intelligence_Analysis/TLM_PSO.py"
+```
+
+Program P4:
+
+```bash
+mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P4_Urban_Operations_Monitoring/TLM_PSO.py"
+```
+
+Program P5:
+
+```bash
+mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P5_Scientific_and_Engineering_Computing/TLM_PSO.py"
+```
+
+Program P6:
+
+```bash
+mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P6_UAV_System_Monitoring/TLM_PSO.py"
+```
+
+Replace `<number_of_processes>` with the required number of MPI processes for the corresponding benchmark program.
+
+### 6.5 Experimental Results
+
+The experimental results are automatically saved in the `experimental_results/` directory. The generated files include:
+
+- `success.xlsx`: path-coverage success results
+- `time.xlsx`: total execution time
+- `fitness.xlsx`: fitness values
+- `iterations.xlsx`: number of iterations
+- `evaluations.xlsx`: number of fitness evaluations
+
+The first five executions are treated as warm-up runs and are excluded from the final statistical results.
