@@ -1,0 +1,440 @@
+POSITION_RANGES = [
+    (10, 100),
+    (40, 100),
+    (30, 300),
+    (20, 100),
+    (1, 10),
+]
+
+
+def worker_loop(local_comm):
+    rank = local_comm.Get_rank()
+    status = MPI.Status()
+
+    while True:
+        # 使用 Probe 先检查消息标签
+        local_comm.Probe(source=0, tag=MPI.ANY_TAG, status=status)
+        tag = status.Get_tag()
+
+        # 1. 优先处理控制消息
+        if tag == 0:
+            control_msg = local_comm.recv(source=0, tag=0, status=status)
+            if control_msg == "QUIT":
+                break
+            continue
+
+        # 2. 如果不是控制消息，则按顺序接收数据并直接赋给具体变量
+        if rank == 1:
+            # 接收: 温度(x), 湿度(y), 气压(z)
+            x = local_comm.recv(source=0, tag=1, status=status)
+            y = local_comm.recv(source=0, tag=2, status=status)
+            z = local_comm.recv(source=0, tag=3, status=status)
+
+            path = []
+            if (x - y > z / 15) != (x * 2 - y > z / 15):
+                path.append(1)
+            if (x - y > z / 15) != (x - y * 2 > z / 15):
+                path.append(2)
+            if (x - y > z / 15) != (x - y > z / 2):
+                path.append(3)
+            if (x - y > z / 15) != (x - z > z / 15):
+                path.append(4)
+            if (x - y > z / 15) != (x - y > x / 60 / 15):
+                path.append(5)
+            if (x - y > z / 15) != (x - y + 20 > z / 15):
+                path.append(6)
+            if (x - y > z / 15) != (x - 40 > z / 15):
+                path.append(7)
+            if (x - y > z / 15) != (60 - y > z / 15):
+                path.append(8)
+            if (x - y > z / 15) != (x - y > 10 / 15):
+                path.append(9)
+            if (x - y > z / 15) != (x - y > (x - 200) / 15):
+                path.append(10)
+
+            if x - y > z / 15:
+                type_code = 'B1'
+
+            if (y / x > z / 40) != (y * 2.5 / x > z / 40):
+                path.append(11)
+            if (y / x > z / 40) != (y / x / 5 > z / 40):
+                path.append(12)
+            if (y / x > z / 40) != (y - x > z / 40):
+                path.append(13)
+            if (y / x > z / 40) != (y / 20 > z / 40):
+                path.append(14)
+            if (y / x > z / 40) != (250 / x > z / 40):
+                path.append(15)
+            if (y / x > z / 40) != (y / x > 80 / 40):
+                path.append(16)
+            if (y / x > z / 40) != (y / x > 10 * x / 40):
+                path.append(17)
+            if (y / x > z / 40) != (y / x > 50 * y / 40):
+                path.append(18)
+            if (y / x > z / 40) != (y / x > (z + 150) / 40):
+                path.append(19)
+            if (y / x > z / 40) != (y / x > (z + 5 * x) / 40):
+                path.append(20)
+
+            if y / x > z / 40:
+                type_code = 'B2'
+
+            if (x + z < y * 3) != (x + z / 2 < y * 3):
+                path.append(21)
+            if (x + z < y * 3) != (x / 2 + z < y * 3):
+                path.append(22)
+            if (x + z < y * 3) != (x + x < y * 3):
+                path.append(23)
+            if (x + z < y * 3) != (z + z < y * 3):
+                path.append(24)
+            if (x + z < y * 3) != (x + y * 2 < y * 3):
+                path.append(25)
+            if (x + z < y * 3) != (y * 1.5 + z < y * 3):
+                path.append(26)
+            if (x + z < y * 3) != (x + z < x * 3):
+                path.append(27)
+            if (x + z < y * 3) != (x + z < z / 5 * 3):
+                path.append(28)
+            if (x + z < y * 3) != (x + z - 50 < y * 3):
+                path.append(29)
+            if (x + z < y * 3) != (x + z < (y + 20) * 3):
+                path.append(30)
+
+            if x + z < y * 3:
+                type_code = 'B3'
+
+            local_comm.send(path, dest=0, tag=11)
+
+        elif rank == 2:
+            # 接收: 湿度(y), 气压(z), 风速(w)
+            y = local_comm.recv(source=0, tag=1, status=status)
+            z = local_comm.recv(source=0, tag=2, status=status)
+            w = local_comm.recv(source=0, tag=3, status=status)
+
+            path = []
+
+            if (w ** 2 - y * z < 800) != (w ** 2 / 15 - y * z < 800):
+                path.append(1)
+            if (w ** 2 - y * z < 800) != ((w - 50) ** 2 - y * z < 800):
+                path.append(2)
+            if (w ** 2 - y * z < 800) != (w ** 1.5 - y * z < 800):
+                path.append(3)
+            if (w ** 2 - y * z < 800) != ((w - y) ** 2 - y * z < 800):
+                path.append(4)
+            if (w ** 2 - y * z < 800) != (y ** 2 - y * z < 800):
+                path.append(5)
+            if (w ** 2 - y * z < 800) != ((z / 25) ** 2 - y * z < 800):
+                path.append(6)
+            if (w ** 2 - y * z < 800) != (20 ** 2 - y * z < 800):
+                path.append(7)
+            if (w ** 2 - y * z < 800) != (w ** 2 - z / 5 * z < 800):
+                path.append(8)
+            if (w ** 2 - y * z < 800) != (w ** 2 - y * y < 800):
+                path.append(9)
+            if (w ** 2 - y * z < 800) != (w ** 2 - y * z < 10500):
+                path.append(10)
+
+            if w ** 2 - y * z < 800:
+                type_code = 'C1'
+
+            if ((y + w) % 25 > z / 12) != ((y + w * 5) % 25 > z / 12):
+                path.append(11)
+            if ((y + w) % 25 > z / 12) != ((y * 15 + w) % 25 > z / 12):
+                path.append(12)
+            if ((y + w) % 25 > z / 12) != ((y + y) % 25 > z / 12):
+                path.append(13)
+            if ((y + w) % 25 > z / 12) != ((y + w) % 5 > z / 12):
+                path.append(14)
+            if ((y + w) % 25 > z / 12) != ((y + w) % 25 > z):
+                path.append(15)
+            if ((y + w) % 25 > z / 12) != ((y + 20) % 25 > z / 12):
+                path.append(16)
+            if ((y + w) % 25 > z / 12) != ((y + w) / 25 > z / 12):
+                path.append(17)
+            if ((y + w) % 25 > z / 12) != ((y + w-5 ) % 25 > z / 12):
+                path.append(18)
+            if ((y + w) % 25 > z / 12) != ((y + w) * 5 % 25 > z / 12):
+                path.append(19)
+            if ((y + w) % 25 > z / 12) != ((60 + w) % 25 > z / 12):
+                path.append(20)
+
+            if (y + w) % 25 > z / 12:
+                type_code = 'C2'
+
+            if (w / 2 + y > z + 50) != (w * 5 / 2 + y > z + 50):
+                path.append(21)
+            if (w / 2 + y > z + 50) != (y * 2 / 2 + y > z + 50):
+                path.append(22)
+            if (w / 2 + y > z + 50) != (z * 1.5 / 2 + y > z + 50):
+                path.append(23)
+            if (w / 2 + y > z + 50) != ((w + 100) / 2 + y > z + 50):
+                path.append(24)
+            if (w / 2 + y > z + 50) != (w / 2 + y * 1.5 > z + 50):
+                path.append(25)
+            if (w / 2 + y > z + 50) != (w / 2 + y > z - 50):
+                path.append(26)
+            if (w / 2 + y > z + 50) != (200 / 2 + y > z + 50):
+                path.append(27)
+            if (w / 2 + y > z + 50) != (w / 2 + z > z + 50):
+                path.append(28)
+            if (w / 2 + y > z + 50) != (w / 2 + y > 80 + 50):
+                path.append(29)
+            if (w / 2 + y > z + 50) != (w / 2 + y > z + z / 5):
+                path.append(30)
+
+            if w / 2 + y > z + 50:
+                type_code = 'C3'
+
+            local_comm.send(path, dest=0, tag=21)
+
+        elif rank == 3:
+            # 接收: 气压(z), 风速(w), 日照(m)
+            z = local_comm.recv(source=0, tag=1, status=status)
+            w = local_comm.recv(source=0, tag=2, status=status)
+            m = local_comm.recv(source=0, tag=3, status=status)
+
+            path = []
+            if (z > w + m ** 3) != (z * 3 > w + m ** 3):
+                path.append(1)
+            if (z > w + m ** 3) != (z + 300 > w + m ** 3):
+                path.append(2)
+            if (z > w + m ** 3) != (z > w / 5 + m ** 3):
+                path.append(3)
+            if (z > w + m ** 3) != (z > w + m * 10):
+                path.append(4)
+            if (z > w + m ** 3) != (z > w + 30 ** 3):
+                path.append(5)
+            if (z > w + m ** 3) != (z > m + m ** 3):
+                path.append(6)
+            if (z > w + m ** 3) != (z * z / 35 > w + m ** 3):
+                path.append(7)
+            if (z > w + m ** 3) != (z * w / 35 > w + m ** 3):
+                path.append(8)
+            if (z > w + m ** 3) != (z + 2 * w > w + m ** 3):
+                path.append(9)
+            if (z > w + m ** 3) != (z * m / 5 > w + m ** 3):
+                path.append(10)
+
+            if z > w + m ** 3:
+                type_code = 'D1'
+
+            if (m * w / 2 < z - 100) != (m * w * 5 / 2 < z - 100):
+                path.append(11)
+            if (m * w / 2 < z - 100) != (m * w * m / 2 < z - 100):
+                path.append(12)
+            if (m * w / 2 < z - 100) != (m * w < z - 100):
+                path.append(13)
+            if (m * w / 2 < z - 100) != (w * 2 * w / 2 < z - 100):
+                path.append(14)
+            if (m * w / 2 < z - 100) != (m * m * 2 / 2 < z - 100):
+                path.append(15)
+            if (m * w / 2 < z - 100) != (m * w / 2 + 600 < z - 100):
+                path.append(16)
+            if (m * w / 2 < z - 100) != (m * w * 2 < z - 100):
+                path.append(17)
+            if (m * w / 2 < z - 100) != (m * w / 2 < z / 100):
+                path.append(18)
+            if (m * w / 2 < z - 100) != (m * w / 2 < z - 2):
+                path.append(19)
+            if (m * w / 2 < z - 100) != (m * w / 2 < m - 100):
+                path.append(20)
+
+            if m * w / 2 < z - 100:
+                type_code = 'D2'
+
+            if ((z - w) / m > 30) != ((z - w) * 2 / m > 30):
+                path.append(21)
+            if ((z - w) / m > 30) != ((z * 1.5 - w) / m > 30):
+                path.append(22)
+            if ((z - w) / m > 30) != ((z - w / 5) / m > 30):
+                path.append(23)
+            if ((z - w) / m > 30) != ((z - w) > 30):
+                path.append(24)
+            if ((z - w) / m > 30) != ((z + 50 - w) / m > 30):
+                path.append(25)
+            if ((z - w) / m > 30) != ((z - w) / m / 2 > 30):
+                path.append(26)
+            if ((z - w) / m > 30) != ((z - m) / m > 30):
+                path.append(27)
+            if ((z - w) / m > 30) != ((z - z / 8) / m > 30):
+                path.append(28)
+            if ((z - w) / m > 30) != ((z - 20) / m > 30):
+                path.append(29)
+            if ((z - w) / m > 30) != ((60 - w) / m > 30):
+                path.append(30)
+
+            if (z - w) / m > 30:
+                type_code = 'D3'
+
+            local_comm.send(path, dest=0, tag=31)
+
+
+def generate_mpi_paths(comm, a):
+    """主进程与工作进程通信，处理5个变量"""
+    status = MPI.Status()
+    path = []
+    x, y, z, w, m = a[0], a[1], a[2], a[3], a[4]
+
+    comm.send(x, dest=1, tag=1)
+    comm.send(y, dest=1, tag=2)
+    comm.send(z, dest=1, tag=3)
+
+    comm.send(y, dest=2, tag=1)
+    comm.send(z, dest=2, tag=2)
+    comm.send(w, dest=2, tag=3)
+
+    comm.send(z, dest=3, tag=1)
+    comm.send(w, dest=3, tag=2)
+    comm.send(m, dest=3, tag=3)
+
+    # 主进程的路径计算
+    if (x + y > z / 5 + w * 2) != (x + y * 2 > z / 5 + w * 2):
+        path.append(1)
+    if (x + y > z / 5 + w * 2) != (x * 2 + y > z / 5 + w * 2):
+        path.append(2)
+    if (x + y > z / 5 + w * 2) != (x + y > z / 5 * w * 2):
+        path.append(3)
+    if (x + y > z / 5 + w * 2) != (x + y > z / 2 + w * 2):
+        path.append(4)
+    if (x + y > z / 5 + w * 2) != (x + y > z / 5 + w * 5):
+        path.append(5)
+    if (x + y > z / 5 + w * 2) != (x + x > z / 5 + w * 2):
+        path.append(6)
+    if (x + y > z / 5 + w * 2) != (y + y > z / 5 + w * 2):
+        path.append(7)
+    if (x + y > z / 5 + w * 2) != (x + y > x / 5 + w * 2):
+        path.append(8)
+    if (x + y > z / 5 + w * 2) != (x + y > z / 5 + x * 5 * 2):
+        path.append(9)
+    if (x + y > z / 5 + w * 2) != (x + z / 5 > z / 5 + w * 2):
+        path.append(10)
+
+    if x + y > z / 5 + w * 2:
+        type_code = 'A1'
+
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 4 * y / 6):
+        path.append(11)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 3 > x / 4 + y / 6):
+        path.append(12)
+    if (m ** 2 > x / 4 + y / 6) != ((m * 2) ** 2 > x / 4 + y / 6):
+        path.append(13)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 15 + y / 6):
+        path.append(14)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 4 + y / 30):
+        path.append(15)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 4 - y / 6):
+        path.append(16)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > m / 4 + y / 6):
+        path.append(17)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 4 + m / 6):
+        path.append(18)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > 20 / 4 + y / 6):
+        path.append(19)
+    if (m ** 2 > x / 4 + y / 6) != (m ** 2 > x / 4 + 8 / 6):
+        path.append(20)
+
+    if m ** 2 > x / 4 + y / 6:
+        type_code = 'A2'
+
+    if ((x + w) / 2 < y - m * 8) != ((x + w * 5) / 2 < y - m * 8):
+        path.append(21)
+    if ((x + w) / 2 < y - m * 8) != ((x * 6 + w) / 2 < y - m * 8):
+        path.append(22)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) * 5 / 2 < y - m * 8):
+        path.append(23)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) < y - m * 8):
+        path.append(24)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) / 2 < y - m / 8):
+        path.append(25)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) / 2 < y / 5 - m * 8):
+        path.append(26)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) / 2 < y - m * 4):
+        path.append(27)
+    if ((x + w) / 2 < y - m * 8) != ((x + w) / 2 < x / 2 - m * 8):
+        path.append(28)
+    if ((x + w) / 2 < y - m * 8) != ((w * 5 + w) / 2 < y - m * 8):
+        path.append(29)
+    if ((x + w) / 2 < y - m * 8) != ((x + x * 2) / 2 < y - m * 8):
+        path.append(30)
+
+    if (x + w) / 2 < y - m * 8:
+        type_code = 'A3'
+
+    path1 = comm.recv(source=1, tag=11, status=status)
+    path2 = comm.recv(source=2, tag=21, status=status)
+    path3 = comm.recv(source=3, tag=31, status=status)
+
+targetPathsSets = [[[3, 4, 5, 6, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30],
+  [13, 15, 16, 21, 22, 23, 25, 29, 30],
+  [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  [5, 11, 12, 13, 14, 16, 17, 18, 20, 26, 30]],
+ [[3, 5, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30],
+  [1, 7, 11, 13, 14, 15, 24, 26, 27, 28],
+  [11, 13, 14, 15, 16, 17, 18, 20, 23, 26, 27],
+  [1, 2, 3, 4, 6, 7, 9, 15, 19, 21, 22, 24, 25]],
+ [[3, 4, 5, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30],
+  [11, 13, 14, 15, 16, 24, 26, 27, 28],
+  [13, 14, 15, 16, 17, 18, 19, 20],
+  [5, 8, 11, 12, 13, 14, 16, 17, 18, 20, 26, 30]],
+ [[3, 5, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 27],
+  [1, 7, 13, 14, 24, 26, 27, 28],
+  [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  [5, 8, 11, 12, 13, 14, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[3, 4, 5, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 27],
+  [1, 6, 7, 10, 13, 14, 24, 26, 28],
+  [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 26],
+  [1, 2, 3, 4, 6, 7, 8, 9, 15, 19, 21, 22, 24, 25, 27]],
+ [[3, 4, 5, 6, 9, 10, 12, 13, 16, 18, 20, 21, 22, 23, 24, 26, 28, 29, 30],
+  [1, 7, 11, 13, 14, 15, 27, 28],
+  [12, 14, 15, 17, 19, 20, 21, 22, 23, 26, 27],
+  [5, 15, 19, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[1, 7, 12, 13, 15, 16, 18, 20, 21, 22, 23, 24, 26, 28, 29],
+  [12, 17, 18, 19, 20, 24, 26, 27, 28],
+  [11, 12, 14, 15, 17, 18, 19, 20, 21, 23, 26, 27],
+  [5, 10, 15, 19, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[1, 7, 12, 13, 15, 16, 18, 20, 21, 22, 23, 24, 26, 28, 29],
+  [12, 17, 18, 19, 20, 24, 26, 27, 28],
+  [8, 11, 12, 14, 15, 17, 19, 20, 21, 23, 26, 29],
+  [5, 10, 15, 19, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[3, 5, 9, 10, 21, 22, 23, 24, 26, 28, 29, 30],
+  [1, 4, 6, 7, 10, 11, 14, 15, 25, 28],
+  [5, 8, 11, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 30],
+  [4, 5, 10, 19, 22, 23, 25, 27, 28, 29]],
+ [[1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25],
+  [1, 7, 13, 14, 24, 26, 27, 28],
+  [8, 11, 13, 14, 15, 17, 18, 19, 20, 21, 23, 29],
+  [1, 2, 3, 4, 6, 7, 8, 9, 15, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[1, 2, 7, 8, 12, 13, 16, 18, 20, 21, 22, 23, 24, 26, 28, 29],
+  [12, 17, 18, 19, 20, 27, 28],
+  [11, 12, 13, 16, 18, 20, 21, 22, 23, 24, 26, 27],
+  [5, 10, 15, 19, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  [1, 5, 6, 7, 9, 10, 21, 22, 23, 29, 30],
+  [8, 9, 11, 12, 13, 14, 15, 17, 19, 20, 21],
+  [1, 2, 3, 4, 6, 7, 8, 9, 15, 21, 22, 23, 24, 27, 28, 29]],
+ [[3, 4, 5, 6, 9, 10, 11, 21, 22, 23, 24, 26, 28, 29, 30],
+  [11, 13, 15, 16, 24, 26, 27, 28],
+  [11, 12, 13, 14, 15, 17, 19, 20],
+  [1, 2, 4, 7, 11, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25]],
+ [[1, 16, 21, 22, 23, 24, 26, 28, 29],
+  [1, 11, 13, 14, 15, 28],
+  [1, 2, 3, 4, 5, 6, 7, 10, 12, 14, 15, 16, 21, 22, 23, 24, 25, 26, 27, 30],
+  [1, 2, 3, 6, 7, 8, 9, 19, 23, 25, 27, 28, 29]],
+ [[12, 13, 14, 15, 16, 17, 18, 20],
+  [8, 11, 13, 15, 16, 21, 23, 25, 30],
+  [1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21],
+  [5, 10, 15, 19, 21, 22, 23, 24, 25, 27, 28, 29]],
+ [[1, 2, 6, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  [2, 14, 15, 21, 22, 24, 26, 27, 29, 30],
+  [1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 30],
+  [2, 9]],
+ [[1, 2, 7, 16, 21, 22, 23, 24, 26, 28, 29, 30],
+  [1, 4, 7, 12, 16, 17, 18, 19, 20, 28],
+  [1, 2, 3, 4, 6, 7, 9, 10, 12, 13, 17, 18, 19, 20, 28, 29],
+  [1, 2, 3, 6, 8, 9, 19, 27, 28]],
+ [[3, 4, 5, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25],
+  [2, 3, 4, 8, 21, 23],
+  [12, 13, 14, 15, 16, 17, 18, 19],
+  [1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17, 18, 20, 26, 30]]]
+
+    return [path, path1, path2, path3]
