@@ -347,3 +347,43 @@ The experimental results are automatically saved in the `experimental_results/` 
 - `evaluations.xlsx`: number of fitness evaluations
 
 The first five executions are treated as warm-up runs and are excluded from the final statistical results.
+
+## 7. Repository Structure
+
+```text
+TLM-PSO-MPI/
+├── Picture/
+│   ├── figure1.jpg
+│   ├── figure2.jpg
+│   └── figure3.jpg
+│
+├── experiments/
+│   ├── P1_tests/
+│   │   └── test_unit_1/
+│   │       └── RQ1/
+│   │           └── TLM_PSO.py
+│   │           └── IC_PSO.py
+│   │           └── PSO.py
+│   │       └── RQ2/
+│   │       └── RQ3/
+│   │       └── unit.txt
+│   ├── P2_tests/
+│   ├── P3_tests/
+│   ├── P4_tests/
+│   ├── P5_tests/
+│   └── P6_tests/
+│
+├── subjects/
+│   ├── P1_Intelligent_Learning_Platform/
+│           └── P1_Intelligent_Learning_Platform.py
+│   ├── P2_Industrial_Production_Line_Analysis/
+│   ├── P3_Business_Intelligence_Analysis/
+│   ├── P4_Urban_Operations_Monitoring/
+│   ├── P5_Scientific_and_Engineering_Computing/
+│   └── P6_UAV_System_Monitoring/
+│
+├── .gitignore
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
