@@ -330,39 +330,11 @@ For example, run TLM_PSO on Program P1 using:
 ```bash
 mpiexec -n 4 python "Core Algorithm Implementations/P1_Intelligent_Learning_Platform/TLM_PSO.py"
 
-### 6.4 Run the Other Benchmark Programs
+The number of MPI processes is determined by:
 
-Program P2:
+Number of MPI processes = Number of target paths × 4
 
-```bash
-mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P2_Industrial_Production_Line_Analysis/TLM_PSO.py"
-```
-
-Program P3:
-
-```bash
-mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P3_Business_Intelligence_Analysis/TLM_PSO.py"
-```
-
-Program P4:
-
-```bash
-mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P4_Urban_Operations_Monitoring/TLM_PSO.py"
-```
-
-Program P5:
-
-```bash
-mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P5_Scientific_and_Engineering_Computing/TLM_PSO.py"
-```
-
-Program P6:
-
-```bash
-mpiexec -n <number_of_processes> python "Core Algorithm Implementations/P6_UAV_System_Monitoring/TLM_PSO.py"
-```
-
-Replace `<number_of_processes>` with the required number of MPI processes for the corresponding benchmark program.
+Each target path is assigned four MPI processes, including one main process and three subprocesses. Therefore, when one target path is executed, -n 4 should be used. When multiple target paths are executed concurrently, the value following -n should be adjusted according to the total number of target paths.
 
 ### 6.5 Experimental Results
 
