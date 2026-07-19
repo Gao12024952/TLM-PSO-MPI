@@ -325,10 +325,10 @@ mpiexec --version
 
 ### 6.3 Run an Experiment
 
-For example, run TLM_PSO on Program P1 using:
+For example, run the RQ1 experiment for Program P1 using:
 
 ```bash
-mpiexec -n 4 python "experiments/P1_tests/test_unit_1/TLM_PSO.py"
+mpiexec -n 4 python "experiments/P1_tests/test_unit_1/RQ1/TLM_PSO.py"
 ```
 
 The number of MPI processes is determined by:
