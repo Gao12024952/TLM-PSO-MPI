@@ -402,4 +402,6 @@ The `experiments/` directory contains the scripts used for the baseline comparis
 | RQ3 | `TLM_PSO-noKtp.py` | Removes the information-transfer decision parameter `k_tp` while retaining the other components of TLM_PSO. Cooperative information is therefore adopted without dynamic decision control, allowing the effect of `k_tp` on stability and convergence to be evaluated. |
 | RQ3 | `TLM_PSO-sd.py` | Retains similarity-based path pairing and the divergent-path-pair cooperative strategy, while removing the aggregated-path-pair cooperative strategy. It evaluates the contribution of heterogeneous particle migration to population diversity and global search ability. |
 
+## 9. License
 
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
