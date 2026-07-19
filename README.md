@@ -387,3 +387,82 @@ TLM-PSO-MPI/
 ├── README.md
 └── requirements.txt
 ```
+## 8. Comparative Experiments
+
+The `experiments/` directory contains the scripts used for the baseline comparisons and ablation studies corresponding to RQ1–RQ3. The scripts are organized according to the benchmark program, test unit, and research question.
+
+| Research Question | Script | Purpose |
+|---|---|---|
+| RQ1–RQ3 | `TLM_PSO.py` | Implements the complete TLM_PSO method, including the inner-level cooperative PSO, the outer-level co-evolutionary PSO, similarity-based path pairing, differentiated strategies for aggregated and divergent path pairs, and the information-transfer decision parameter `k_tp`. |
+| RQ1 | `PSO.py` | Uses traditional PSO without inner-level or outer-level cooperative evolution and serves as the basic comparison method. |
+| RQ1 | `IC_PSO.py` | Retains only the inner-level cooperative PSO for a single multi-process path and removes outer-level cooperation among different target paths. It is used to evaluate the independent contribution of IC_PSO. |
+| RQ2 | `TLM_PSO-ra.py` | Randomly constructs path pairs and uniformly applies the aggregated-path-pair cooperative strategy to all path pairs. The `k_tp` parameter is removed, and information exchange is performed in every generation. |
+| RQ2 | `TLM_PSO-rd.py` | Randomly constructs path pairs and uniformly applies the divergent-path-pair cooperative strategy to all path pairs. It evaluates the importance of similarity- and divergence-guided path pairing. |
+| RQ3 | `TLM_PSO-sa.py` | Retains similarity-based path pairing and the aggregated-path-pair cooperative strategy, while removing the divergent-path-pair cooperative strategy. It evaluates the contribution of information sharing among similar paths to convergence acceleration. |
+| RQ3 | `TLM_PSO-noKtp.py` | Removes the information-transfer decision parameter `k_tp` while retaining the other components of TLM_PSO. Cooperative information is therefore adopted without dynamic decision control, allowing the effect of `k_tp` on stability and convergence to be evaluated. |
+| RQ3 | `TLM_PSO-sd.py` | Retains similarity-based path pairing and the divergent-path-pair cooperative strategy, while removing the aggregated-path-pair cooperative strategy. It evaluates the contribution of heterogeneous particle migration to population diversity and global search ability. |
+
+### 8.1 RQ1: Contributions of the Two-Level Framework
+
+RQ1 compares the following methods:
+
+- `PSO.py`
+- `IC_PSO.py`
+- `TLM_PSO.py`
+
+The comparison evaluates the contribution of inner-level cooperative evolution and the effectiveness of the complete two-level TLM_PSO framework.
+
+### 8.2 RQ2: Path-Pair Construction and Strategy Selection
+
+RQ2 compares the following methods:
+
+- `TLM_PSO.py`
+- `TLM_PSO-ra.py`
+- `TLM_PSO-rd.py`
+
+The comparison evaluates whether constructing aggregated and divergent path pairs according to path similarity and applying differentiated cooperative strategies improves optimization performance compared with random path pairing and homogeneous cooperation.
+
+### 8.3 RQ3: Contributions of the Outer-Level Modules
+
+RQ3 compares the following methods:
+
+- `TLM_PSO.py`
+- `TLM_PSO-sa.py`
+- `TLM_PSO-noKtp.py`
+- `TLM_PSO-sd.py`
+
+The comparison evaluates the independent contributions of the following three components:
+
+1. The cooperative evolution strategy for aggregated path pairs.
+2. The information-transfer decision parameter `k_tp`.
+3. The cooperative evolution strategy for divergent path pairs.
+
+### 8.4 Repeated Executions and Evaluation Metrics
+
+Each experimental script performs 25 executions:
+
+- 5 warm-up executions
+- 20 formal independent runs
+
+The warm-up executions are excluded from the final statistical results.
+
+RQ1 uses the following evaluation metrics:
+
+- Success Rate (`SR`)
+- Average Number of Iterations (`ANI`)
+- Total Execution Time (`TET`)
+- Number of Fitness Evaluations (`NFE`)
+- Mutation Score (`MS`)
+
+RQ2 and RQ3 use the following evaluation metrics:
+
+- Success Rate (`SR`)
+- Average Number of Iterations (`ANI`)
+- Total Execution Time (`TET`)
+- Number of Fitness Evaluations (`NFE`)
+
+The required number of MPI processes is calculated as:
+
+`Number of MPI processes = Number of target paths × 4`
+
+Each target path is assigned one main process and three subprocesses.
